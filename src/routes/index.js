@@ -10,6 +10,15 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  createPlan,
+  updatePlan,
+  softDeletePlan,
+  createPrice,
+  softDeletePrice,
+  updatePrice,
+  createSub,
+  updateSub,
+  deleteSub,
 } = require('../controllers');
 
 const endpointSecret = 'whsec_5af6c39753451a11c2721890a4236a23725f3796c7880f95e5313bce8a7f2eed';
@@ -27,7 +36,6 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (reques
   }
 
   // Handle the event
-  console.log(event);
   switch (event.type) {
     case 'customer.created': {
       const res = await createCustomer(event);
@@ -71,20 +79,76 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (reques
       }
       break;
     }
-    case 'customer.subscription.created':
-    case 'customer.subscription.deleted': // Soft delete using `status = canceled`
-    case 'customer.subscription.updated':
+    case 'plan.created': {
+      const res = await createPlan(event);
+      if (res.code === 200) {
+        console.log('✅ Plan Created!');
+      }
+      break;
+    }
+    case 'plan.updated': {
+      const res = await updatePlan(event);
+      if (res.code === 200) {
+        console.log('✅ Plan updated!');
+      }
+      break;
+    }
+    case 'plan.deleted': {
+      const res = await softDeletePlan(event);
+      if (res.code === 200) {
+        console.log('✅ Plan updated!');
+      }
+      break;
+    }
+    case 'price.created': {
+      const res = await createPrice(event);
+      if (res.code === 200) {
+        console.log('✅ Price Created!');
+      }
+      break;
+    }
+    case 'price.updated': {
+      const res = await updatePrice(event);
+      if (res.code === 200) {
+        console.log('✅ Price updated!');
+      }
+      break;
+    }
+    case 'price.deleted': {
+      const res = await softDeletePrice(event);
+      if (res.code === 200) {
+        console.log('✅ Price deleted!');
+      }
+      break;
+    }
+    case 'customer.subscription.created': {
+      const res = await createSub(event);
+      if (res.code === 200) {
+        console.log('✅ Subscription Created!');
+      }
+      break;
+    }
+    case 'customer.subscription.deleted': {
+      const res = await deleteSub(event);
+      if (res.code === 200) {
+        console.log('✅ Subscription deleted!');
+      }
+      break;
+    }
+    case 'customer.subscription.updated': {
+      const res = await updateSub(event);
+      if (res.code === 200) {
+        console.log('✅ Subscription updated!');
+      }
+      break;
+    }
     case 'invoice.created':
     case 'invoice.finalized':
     case 'invoice.paid':
     case 'invoice.payment_failed':
     case 'invoice.payment_succeeded':
     case 'invoice.updated':
-    case 'price.created':
-    case 'price.updated':
-    case 'price.deleted':
     default:
-      console.log(`Unhandled event type ${event.type}`);
   }
 
   // Return a 200 response to acknowledge receipt of the event
