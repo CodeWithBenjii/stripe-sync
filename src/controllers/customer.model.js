@@ -62,10 +62,24 @@ const updateCustomer = async (customer) => {
       tax_exempt: data.tax_exempt,
     },
   });
-  return { message: 'customer.created', code: 200 };
+  return { message: 'customer.updated', code: 200 };
+};
+const softDeleteCustomer = async (customer) => {
+  const data = customer.data.object;
+
+  await prisma.customers.update({
+    where: {
+      id: data.id,
+    },
+    data: {
+      deleted: true,
+    },
+  });
+  return { message: 'customer.deleted', code: 200 };
 };
 
 module.exports = {
   createCustomer,
   updateCustomer,
+  softDeleteCustomer,
 };

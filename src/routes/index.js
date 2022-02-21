@@ -3,7 +3,14 @@ const express = require('express');
 
 const router = express.Router();
 const stripe = require('stripe');
-const { createCustomer, updateCustomer } = require('../controllers');
+const {
+  createCustomer,
+  updateCustomer,
+  softDeleteCustomer,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} = require('../controllers');
 
 const endpointSecret = 'whsec_5af6c39753451a11c2721890a4236a23725f3796c7880f95e5313bce8a7f2eed';
 
@@ -36,7 +43,34 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (reques
       }
       break;
     }
-
+    case 'customer.deleted': {
+      const res = await softDeleteCustomer(event);
+      if (res.code === 200) {
+        console.log('✅ Customer Soft Deleted!');
+      }
+      break;
+    }
+    case 'product.created': {
+      const res = await createProduct(event);
+      if (res.code === 200) {
+        console.log('✅ Product Created!');
+      }
+      break;
+    }
+    case 'product.updated': {
+      const res = await updateProduct(event);
+      if (res.code === 200) {
+        console.log('✅ Product Updated!');
+      }
+      break;
+    }
+    case 'product.deleted': {
+      const res = await deleteProduct(event);
+      if (res.code === 200) {
+        console.log('✅ Product Deleted!');
+      }
+      break;
+    }
     case 'customer.subscription.created':
     case 'customer.subscription.deleted': // Soft delete using `status = canceled`
     case 'customer.subscription.updated':
@@ -46,9 +80,6 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (reques
     case 'invoice.payment_failed':
     case 'invoice.payment_succeeded':
     case 'invoice.updated':
-    case 'product.created':
-    case 'product.updated':
-    case 'product.deleted':
     case 'price.created':
     case 'price.updated':
     case 'price.deleted':
