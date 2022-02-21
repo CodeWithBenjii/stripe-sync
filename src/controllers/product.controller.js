@@ -4,6 +4,7 @@ const prisma = new Prisma.PrismaClient();
 
 const createProduct = async (product) => {
   const data = product.data.object;
+  console.log(product);
   await prisma.products.create({
     data: {
       id: data.id,
@@ -21,6 +22,7 @@ const createProduct = async (product) => {
       unit_label: data.unit_label,
       updated: data.updated,
       url: data.url,
+      prices: data.prices,
     },
   });
   return { message: 'product.created', code: 200 };

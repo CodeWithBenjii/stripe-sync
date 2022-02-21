@@ -2,7 +2,7 @@ const { createCustomer, updateCustomer, softDeleteCustomer } = require('./custom
 const { createProduct, updateProduct, deleteProduct } = require('./product.controller');
 const { createPlan, updatePlan, softDeletePlan } = require('./plan.controller');
 const { createPrice, softDeletePrice, updatePrice } = require('./price.controller');
-const { invoiceCreated } = require('./invoice.controller');
+const { invoiceCreated, invoicefinalized } = require('./invoice.controller');
 const { createSub, updateSub, deleteSub } = require('./subscription.controller');
 
 module.exports = {
@@ -19,6 +19,7 @@ module.exports = {
   softDeletePrice,
   updatePrice,
   invoiceCreated,
+  invoicefinalized,
   createSub,
   updateSub,
   deleteSub,

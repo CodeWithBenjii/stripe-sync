@@ -19,6 +19,8 @@ const {
   createSub,
   updateSub,
   deleteSub,
+  invoiceCreated,
+  invoicefinalized,
 } = require('../controllers');
 
 const endpointSecret = 'whsec_5af6c39753451a11c2721890a4236a23725f3796c7880f95e5313bce8a7f2eed';
@@ -38,6 +40,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (reques
   // Handle the event
   switch (event.type) {
     case 'customer.created': {
+      console.log(event);
       const res = await createCustomer(event);
       if (res.code === 200) {
         console.log('✅ Customer Created!');
@@ -142,12 +145,48 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (reques
       }
       break;
     }
-    case 'invoice.created':
-    case 'invoice.finalized':
-    case 'invoice.paid':
-    case 'invoice.payment_failed':
-    case 'invoice.payment_succeeded':
-    case 'invoice.updated':
+    case 'invoice.created': {
+      const res = await invoiceCreated(event);
+      if (res.code === 200) {
+        console.log('✅ invoice created!');
+      }
+      break;
+    }
+    case 'invoice.finalized': {
+      const res = await invoicefinalized(event);
+      if (res.code === 200) {
+        console.log('✅ invoice finalized!');
+      }
+      break;
+    }
+    case 'invoice.paid': {
+      const res = await invoicefinalized(event);
+      if (res.code === 200) {
+        console.log('✅ invoice Paid!');
+      }
+      break;
+    }
+    case 'invoice.payment_failed': {
+      const res = await invoicefinalized(event);
+      if (res.code === 200) {
+        console.log('✅ invoice payment failed!');
+      }
+      break;
+    }
+    case 'invoice.payment_succeeded': {
+      const res = await invoicefinalized(event);
+      if (res.code === 200) {
+        console.log('✅ invoice payment succeeded!');
+      }
+      break;
+    }
+    case 'invoice.updated': {
+      const res = await invoicefinalized(event);
+      if (res.code === 200) {
+        console.log('✅ invoice updated!');
+      }
+      break;
+    }
     default:
   }
 
