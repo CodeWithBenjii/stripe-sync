@@ -1,0 +1,48 @@
+{
+  "name": "stripe-sync-projtrack",
+  "version": "0.0.1",
+  "description": "A express app that can be used with stripe to have a local version of a stipe user object",
+  "main": "src/index.js",
+  "author": "Benjamin Lee",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "commit": "cz",
+    "dev": "nodemon"
+  },
+  "dependencies": {
+    "@prisma/client": "^3.9.2",
+    "body-parser": "^1.19.2",
+    "compression": "^1.7.4",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "helmet": "^5.0.2",
+    "knex": "^1.0.3",
+    "morgan": "^1.10.0",
+    "objection": "^3.0.1",
+    "pg": "^8.7.3",
+    "stripe": "^8.203.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.18",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

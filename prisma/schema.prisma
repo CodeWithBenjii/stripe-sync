@@ -1,0 +1,401 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model charges {
+  id                     String   @id
+  object                 String?
+  card                   Json?
+  paid                   Boolean?
+  order                  String?
+  amount                 BigInt?
+  review                 String?
+  source                 Json?
+  status                 String?
+  created                Int?
+  dispute                String?
+  invoice                String?
+  outcome                Json?
+  refunds                Json?
+  updated                Int?
+  captured               Boolean?
+  currency               String?
+  customer               String?
+  livemode               Boolean?
+  metadata               Json?
+  refunded               Boolean?
+  shipping               Json?
+  application            String?
+  description            String?
+  destination            String?
+  failure_code           String?
+  on_behalf_of           String?
+  fraud_details          Json?
+  receipt_email          String?
+  payment_intent         String?
+  receipt_number         String?
+  transfer_group         String?
+  amount_refunded        BigInt?
+  application_fee        String?
+  failure_message        String?
+  source_transfer        String?
+  balance_transaction    String?
+  statement_descriptor   String?
+  statement_description  String?
+  payment_method_details Json?
+  updated_at             DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+}
+
+model coupons {
+  id                  String   @id
+  object              String?
+  name                String?
+  valid               Boolean?
+  created             Int?
+  updated             Int?
+  currency            String?
+  duration            String?
+  livemode            Boolean?
+  metadata            Json?
+  redeem_by           Int?
+  amount_off          BigInt?
+  percent_off         Float?
+  times_redeemed      BigInt?
+  max_redemptions     BigInt?
+  duration_in_months  BigInt?
+  percent_off_precise Float?
+  updated_at          DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+}
+
+model customers {
+  id                    String          @id
+  object                String?
+  address               Json?
+  description           String?
+  email                 String?
+  metadata              Json?
+  name                  String?
+  phone                 String?
+  shipping              Json?
+  balance               Int?
+  created               Int?
+  currency              String?
+  default_source        String?
+  delinquent            Boolean?
+  discount              Json?
+  invoice_prefix        String?
+  invoice_settings      Json?
+  livemode              Boolean?
+  next_invoice_sequence Int?
+  preferred_locales     Json?
+  tax_exempt            String?
+  updated_at            DateTime        @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  deleted               Boolean         @default(false)
+  invoices              invoices[]
+  subscriptions         subscriptions[]
+}
+
+model disputes {
+  id                   String   @id
+  object               String?
+  amount               BigInt?
+  charge               String?
+  reason               String?
+  status               String?
+  created              Int?
+  updated              Int?
+  currency             String?
+  evidence             Json?
+  livemode             Boolean?
+  metadata             Json?
+  evidence_details     Json?
+  balance_transactions Json?
+  is_charge_refundable Boolean?
+  updated_at           DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+}
+
+model events {
+  id               String   @id
+  object           String?
+  data             Json?
+  type             String?
+  created          Int?
+  request          String?
+  updated          Int?
+  livemode         Boolean?
+  api_version      String?
+  pending_webhooks BigInt?
+  updated_at       DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+}
+
+model invoices {
+  id                               String          @id
+  object                           String?
+  auto_advance                     Boolean?
+  collection_method                String?
+  currency                         String?
+  description                      String?
+  hosted_invoice_url               String?
+  lines                            Json?
+  metadata                         Json?
+  period_end                       Int?
+  period_start                     Int?
+  status                           invoice_status?
+  total                            BigInt?
+  account_country                  String?
+  account_name                     String?
+  account_tax_ids                  Json?
+  amount_due                       BigInt?
+  amount_paid                      BigInt?
+  amount_remaining                 BigInt?
+  application_fee_amount           BigInt?
+  attempt_count                    Int?
+  attempted                        Boolean?
+  billing_reason                   String?
+  created                          Int?
+  custom_fields                    Json?
+  customer_address                 Json?
+  customer_email                   String?
+  customer_name                    String?
+  customer_phone                   String?
+  customer_shipping                Json?
+  customer_tax_exempt              String?
+  customer_tax_ids                 Json?
+  default_tax_rates                Json?
+  discount                         Json?
+  discounts                        Json?
+  due_date                         Int?
+  ending_balance                   Int?
+  footer                           String?
+  invoice_pdf                      String?
+  last_finalization_error          Json?
+  livemode                         Boolean?
+  next_payment_attempt             Int?
+  number                           String?
+  paid                             Boolean?
+  payment_settings                 Json?
+  post_payment_credit_notes_amount Int?
+  pre_payment_credit_notes_amount  Int?
+  receipt_number                   String?
+  starting_balance                 Int?
+  statement_descriptor             String?
+  status_transitions               Json?
+  subtotal                         Int?
+  tax                              Int?
+  total_discount_amounts           Json?
+  total_tax_amounts                Json?
+  transfer_data                    Json?
+  webhooks_delivered_at            Int?
+  customer                         String?
+  subscription                     String?
+  payment_intent                   String?
+  default_payment_method           String?
+  default_source                   String?
+  on_behalf_of                     String?
+  charge                           String?
+  updated_at                       DateTime        @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  customers                        customers?      @relation(fields: [customer], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subscriptions                    subscriptions?  @relation(fields: [subscription], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([customer], map: "stripe_invoices_customer_idx")
+  @@index([subscription], map: "stripe_invoices_subscription_idx")
+}
+
+model migrations {
+  id          Int       @id
+  name        String    @unique @db.VarChar(100)
+  hash        String    @db.VarChar(40)
+  executed_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model payouts {
+  id                          String   @id
+  object                      String?
+  date                        String?
+  type                        String?
+  amount                      BigInt?
+  method                      String?
+  status                      String?
+  created                     Int?
+  updated                     Int?
+  currency                    String?
+  livemode                    Boolean?
+  metadata                    Json?
+  automatic                   Boolean?
+  recipient                   String?
+  description                 String?
+  destination                 String?
+  source_type                 String?
+  arrival_date                String?
+  bank_account                Json?
+  failure_code                String?
+  transfer_group              String?
+  amount_reversed             BigInt?
+  failure_message             String?
+  source_transaction          String?
+  balance_transaction         String?
+  statement_descriptor        String?
+  statement_description       String?
+  failure_balance_transaction String?
+  updated_at                  DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+}
+
+model plans {
+  id                    String   @id
+  object                String?
+  name                  String?
+  tiers                 Json?
+  active                Boolean?
+  amount                BigInt?
+  created               Int?
+  product               String?
+  updated               Int?
+  currency              String?
+  interval              String?
+  livemode              Boolean?
+  metadata              Json?
+  nickname              String?
+  tiers_mode            String?
+  usage_type            String?
+  billing_scheme        String?
+  interval_count        BigInt?
+  aggregate_usage       String?
+  transform_usage       String?
+  trial_period_days     BigInt?
+  statement_descriptor  String?
+  statement_description String?
+  updated_at            DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+}
+
+model prices {
+  id                  String               @id
+  object              String?
+  active              Boolean?
+  currency            String?
+  metadata            Json?
+  nickname            String?
+  recurring           Json?
+  type                pricing_type?
+  unit_amount         Int?
+  billing_scheme      String?
+  created             Int?
+  livemode            Boolean?
+  lookup_key          String?
+  tiers_mode          pricing_tiers?
+  transform_quantity  Json?
+  unit_amount_decimal String?
+  product             String?
+  updated_at          DateTime             @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  products            products?            @relation(fields: [product], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subscription_items  subscription_items[]
+}
+
+model products {
+  id                   String   @id
+  object               String?
+  active               Boolean?
+  description          String?
+  metadata             Json?
+  name                 String?
+  created              Int?
+  images               Json?
+  livemode             Boolean?
+  package_dimensions   Json?
+  shippable            Boolean?
+  statement_descriptor String?
+  unit_label           String?
+  updated              Int?
+  url                  String?
+  updated_at           DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  prices               prices[]
+}
+
+model subscription_items {
+  id                 String         @id
+  object             String?
+  billing_thresholds Json?
+  created            Int?
+  deleted            Boolean?
+  metadata           Json?
+  quantity           Int?
+  price              String?
+  subscription       String?
+  tax_rates          Json?
+  prices             prices?        @relation(fields: [price], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subscriptions      subscriptions? @relation(fields: [subscription], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model subscriptions {
+  id                                String               @id
+  object                            String?
+  cancel_at_period_end              Boolean?
+  current_period_end                Int?
+  current_period_start              Int?
+  default_payment_method            String?
+  items                             Json?
+  metadata                          Json?
+  pending_setup_intent              String?
+  pending_update                    Json?
+  status                            subscription_status?
+  application_fee_percent           Float?
+  billing_cycle_anchor              Int?
+  billing_thresholds                Json?
+  cancel_at                         Int?
+  canceled_at                       Int?
+  collection_method                 String?
+  created                           Int?
+  days_until_due                    Int?
+  default_source                    String?
+  default_tax_rates                 Json?
+  discount                          Json?
+  ended_at                          Int?
+  livemode                          Boolean?
+  next_pending_invoice_item_invoice Int?
+  pause_collection                  Json?
+  pending_invoice_item_interval     Json?
+  start_date                        Int?
+  transfer_data                     Json?
+  trial_end                         Json?
+  trial_start                       Json?
+  schedule                          String?
+  customer                          String?
+  latest_invoice                    String?
+  plan                              String?
+  updated_at                        DateTime             @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  customers                         customers?           @relation(fields: [customer], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  invoices                          invoices[]
+  subscription_items                subscription_items[]
+}
+
+enum invoice_status {
+  draft
+  open
+  paid
+  uncollectible
+  void
+}
+
+enum pricing_tiers {
+  graduated
+  volume
+}
+
+enum pricing_type {
+  one_time
+  recurring
+}
+
+enum subscription_status {
+  trialing
+  active
+  canceled
+  incomplete
+  incomplete_expired
+  past_due
+  unpaid
+}
